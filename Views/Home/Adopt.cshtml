@@ -1,0 +1,50 @@
+﻿@model DefaultProject.Models.ActivityEvent
+
+<div>
+
+<div style="float: right; margin-top: 10px;">
+<a href="/dashboard" class="btn btn-primary">Home</a>
+
+<a href="/logout" class="btn btn-danger">Log Out</a>
+
+</div>
+<br><br>
+
+<hr>
+
+</div>
+
+<h2>Create an Activity!</h2>
+
+<form asp-action="createActivityEvent" asp-controller="Home" method="POST">
+
+    <p>Title: <br> <input asp-for="title" name="title" pattern=".{2,}" required title="2 characters minimum!"></p>
+    <span asp-validation-for="title" style="color: red;"></span>
+
+    <p>Date & Time: <br> <input asp-for="date" type="datetime-local" name="date" min="@ViewBag.today@ViewBag.time"></p>
+    <span asp-validation-for="date"></span>
+
+    <!-- <p>Time: <br> <input type="time" name="time" min="@ViewBag.time"></p> -->
+
+    <p>Duration: <br> <input asp-for="duration" name="duration" pattern=".{1,}" required title="Required!"> 
+        <select name="durationtime">
+            <option value="Minutes">Minutes</option>
+            <option value="Hours">Hours</option>
+            <option value="Days">Days</option>
+        </select>
+    </p>
+    <span asp-validation-for="duration"></span> 
+
+    <p>Description: <br> <input asp-for="description" name="description" pattern=".{10,}" required title="10 characters minimum!"></p>
+    <span asp-validation-for="description" style="color: red;"></span>
+
+    <br>
+
+    <input type="submit" value="Create Activity" class="btn btn-success">
+
+</form>
+
+<br>
+
+<a href="/dashboard" class="btn btn-danger">Go Back</a>
+

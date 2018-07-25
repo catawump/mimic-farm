@@ -1,0 +1,42 @@
+﻿@using DefaultProject.Models
+@model User
+
+<h2>Error!</h2>
+
+<p>You need to be logged in to view this page!</p>
+
+<p>No account? <a href="/">Click here to register.</a></p>
+
+
+<h2>Login</h2>
+<form action="login" method="POST">
+
+  @{
+        if(@TempData["error"] != null){
+            <p style="color: red;">@TempData["error"]</p>
+        }
+    }
+
+      <table class="table">
+
+    <tr>
+      <td><label asp-for="email">Email: </td>
+      <td><input type="email" name="CheckEmail" pattern=".{1,}"   required title="Required!">
+    </label></td>
+
+    </tr>
+
+      <td>
+        <label asp-for="password">Password: 
+      </td>
+
+       <td><input type="password" name="CheckPassword" pattern=".{1,}"   required title="Required!">
+    </label></td>
+
+    </tr>
+    </table>
+    
+    <input type="submit" value="Login" class="btn btn-success">
+
+</form>
+

@@ -1,0 +1,58 @@
+﻿@using DefaultProject.Models
+
+<h2>@ViewBag.currentActivityEvent.title</h2>
+
+<p><b>Event Coordinator: </b> @ViewBag.currentActivityEvent.creator.first_name @ViewBag.currentActivityEvent.creator.last_name</p>
+
+<p><b>Date: </b> @ViewBag.currentActivityEvent.date</p>
+
+<p><b>Duration: </b> @ViewBag.currentActivityEvent.duration</p>
+
+<p><b>Description: </b> @ViewBag.currentActivityEvent.description</p>
+
+<h3>Participants: </h3>
+
+@{
+        if(@TempData["message"] != null){
+            <p><b>@TempData["message"]</b></p><br>
+        }
+    }
+
+@{
+    foreach(var r in @ViewBag.rsvps){
+        @if (r.user.id != @ViewBag.currentActivityEvent.creator.id){
+        <p>@r.user.first_name @r.user.last_name</p>
+        }
+    }
+}
+
+<hr>
+
+@{
+@if (@ViewBag.currentActivityEvent.creator.id == @ViewBag.currentUser.id){
+                        <form action="/delete/@ViewBag.currentActivityEvent.id" method="POST">
+                            <input type="submit" value="Delete" class="btn btn-danger">
+                        </form>
+                    }
+                    else{
+                        bool print = true;
+                        foreach (var rsvp in @ViewBag.rsvps){
+                            @if (rsvp.user.id == @ViewBag.currentUser.id && rsvp.activity.id == @ViewBag.currentActivityEvent.id){
+                                print = false;
+                            }
+                        }
+                        @if (print){
+                            <form action="/rsvpactivity/@ViewBag.currentActivityEvent.id" method="POST">
+                            <input type="submit" value="Join" class="btn btn-primary">
+                            </form>
+                        }
+                        else{
+                            <form action="/rsvpactivity/@ViewBag.currentActivityEvent.id" method="POST">
+                            <input type="submit" value="Leave" class="btn btn-primary">
+                            </form>
+                        }
+                    }
+}
+                    <hr>
+
+<a href="/dashboard" class="btn btn-primary">Go Back</a>

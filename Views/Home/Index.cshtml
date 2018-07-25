@@ -1,0 +1,93 @@
+﻿@using DefaultProject.Models
+@model User
+
+<h2>Login</h2>
+<form action="login" method="POST">
+
+  @{
+        if(@TempData["error"] != null){
+            <p style="color: red;">@TempData["error"]</p>
+        }
+    }
+
+      <table class="table">
+
+    <tr>
+      <td><label asp-for="email">Email: </td>
+      <td><input type="email" name="CheckEmail" pattern=".{1,}"   required title="Required!">
+    </label></td>
+
+    </tr>
+
+      <td>
+        <label asp-for="password">Password: 
+      </td>
+
+       <td><input type="password" name="CheckPassword" pattern=".{1,}"   required title="Required!">
+    </label></td>
+
+    </tr>
+    </table>
+    
+    <input type="submit" value="Login" class="btn btn-success">
+
+</form>
+
+</div>
+
+<div class="container body-content" style="width: 100%;">
+
+<h2>Register</h2>
+<form  action="create" method="POST">
+
+  <span asp-validation-for="username" style="color: red;"></span>
+  <span asp-validation-for="last_name" style="color: red;"></span>
+  <span asp-validation-for="first_name" style="color: red;"></span>
+  <span asp-validation-for="email" style="color: red;"></span>
+  <span asp-validation-for="password" style="color: red;"></span>
+  <span asp-validation-for="confirm_password" style="color: red;"></span>
+
+  <table class="table">
+
+    <tr>
+      <td><label asp-for="username">Username: </td>
+      <td><input type="text" name="username">
+    </label></td>
+    </tr>
+
+    <tr>
+      <td><label asp-for="first_name">First Name: </td>
+      <td><input type="text" name="first_name">
+    </label></td>
+    </tr>
+
+    <tr>
+      <td><label asp-for="last_name">Last Name: </td>
+      <td><input type="text" name="last_name">
+    </label></td>
+    </tr>
+
+    <tr>
+      <td> <label asp-for="email">Email: </td>
+      <td><input type="email" name="email">
+    </label></td>
+    </tr>
+
+            <tr>
+      <td> <label asp-for="password">Password: </td>
+      <td><input type="password" name="password">
+    </label></td>
+    </tr>
+
+            <tr>
+      <td> <label asp-for="confirm_password">Repeat Password: </td>
+      <td><input type="password" name="confirm_password">
+    </label></td>
+    </tr>
+
+
+  </table>
+
+    <input type="submit" value="Register" class="btn btn-success">
+
+</form>
