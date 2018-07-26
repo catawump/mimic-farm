@@ -1,46 +1,41 @@
-﻿@model DefaultProject.Models.ActivityEvent
+﻿@model DefaultProject.Models.Mimic
 
-<div>
+<h2>Adopt a Mimic!</h2>
 
-<div style="float: right; margin-top: 10px;">
-<a href="/dashboard" class="btn btn-primary">Home</a>
+<p></p>
 
-<a href="/logout" class="btn btn-danger">Log Out</a>
+<form asp-action="createMimic" asp-controller="Home" method="POST">
 
-</div>
-<br><br>
+    <h3>Name Your Mimic</h3>
 
-<hr>
+    <p>Name: <br> <input asp-for="name" name="name" pattern=".{2,}" required title="2 characters minimum!"></p>
+    <span asp-validation-for="name" style="color: red;"></span>
 
-</div>
+    <h3>Select a Species</h3>
 
-<h2>Create an Activity!</h2>
+    <div id="species">
+    <input type="radio" name="species" id="puppy"  value="puppy"/>
+        <label for="puppy"><img src="~/images/mimics/adopt/puppy_egg.png" width="150px"/></label>
 
-<form asp-action="createActivityEvent" asp-controller="Home" method="POST">
+    <input type="radio" name="species" id="cyclops"  value="cyclops"/>
+        <label for="cyclops"><img src="~/images/mimics/adopt/cyclops_egg.png" width="150px"/></label>
 
-    <p>Title: <br> <input asp-for="title" name="title" pattern=".{2,}" required title="2 characters minimum!"></p>
-    <span asp-validation-for="title" style="color: red;"></span>
+        <input type="radio" name="species" id="spike" value="spike" />
+        <label for="spike"><img src="~/images/mimics/adopt/spike_egg.png" width="150px"/></label>
+    </div>
 
-    <p>Date & Time: <br> <input asp-for="date" type="datetime-local" name="date" min="@ViewBag.today@ViewBag.time"></p>
-    <span asp-validation-for="date"></span>
-
-    <!-- <p>Time: <br> <input type="time" name="time" min="@ViewBag.time"></p> -->
-
-    <p>Duration: <br> <input asp-for="duration" name="duration" pattern=".{1,}" required title="Required!"> 
-        <select name="durationtime">
-            <option value="Minutes">Minutes</option>
-            <option value="Hours">Hours</option>
-            <option value="Days">Days</option>
-        </select>
-    </p>
-    <span asp-validation-for="duration"></span> 
-
-    <p>Description: <br> <input asp-for="description" name="description" pattern=".{10,}" required title="10 characters minimum!"></p>
-    <span asp-validation-for="description" style="color: red;"></span>
+    <script>
+        $(document).ready(function(){
+            $('#species input:radio').addClass('input_hidden');
+            $('#species label').click(function(){
+            $(this).addClass('selected').siblings().removeClass('selected');
+            });
+        });
+    </script>
 
     <br>
 
-    <input type="submit" value="Create Activity" class="btn btn-success">
+    <input type="submit" value="Adopt" class="btn btn-success">
 
 </form>
 

@@ -124,11 +124,11 @@ namespace DefaultProject.Controllers
                 // List<ActivityEvent> rsvps = _context.activities.Include(u => u.rsvps).ToList();
                 // List<ActivityEvent> allActivityEvents = _context.activities.Include(a => a.creator).OrderBy(a => a.date).Where(a => a.date > today).ToList(); 
                 User currentUser = _context.users.SingleOrDefault(u => u.id == UserId);
-                // List<RSVP> rsvps_cool = _context.rsvps.Include(r => r.activity).Include(r => r.user).ToList();
+                List<Mimic> usersMimics = _context.mimics.Include(m => m.owner).Where(m => m.owner.id == UserId).ToList();
 
                 // ViewBag.allActivityEvents = allActivityEvents;
                 ViewBag.currentUser = currentUser;
-                // ViewBag.rsvps = rsvps;
+                ViewBag.usersMimics = usersMimics;
                 // ViewBag.rsvps_cool = rsvps_cool;
 
                 return View("Dashboard");
@@ -157,7 +157,7 @@ namespace DefaultProject.Controllers
         // Adoption Creation Stuff
 
         [HttpGet]
-        [Route("Home/adopt")]
+        [Route("adopt")]
         public IActionResult Adopt()
         {
             int? UserId = HttpContext.Session.GetInt32("UserId");
@@ -171,54 +171,56 @@ namespace DefaultProject.Controllers
             }
         }
 
-        // [HttpPost]
-        // [Route("createActivityEvent")]
-        // public IActionResult createActivityEvent(string title, DateTime date, string durationtime, int duration, string description)
-        // {
-        //     int? UserId = HttpContext.Session.GetInt32("UserId");
-        //         if (UserId != null)
-        //         {
-        //             if(ModelState.IsValid){
-        //                 User currentUser = _context.users.SingleOrDefault(u => u.id == UserId);
+        [HttpPost]
+        [Route("createMimic")]
+        public IActionResult createMimic(string name, string species)
+        {
+            int? UserId = HttpContext.Session.GetInt32("UserId");
+                if (UserId != null)
+                {
+                    if(ModelState.IsValid){
+                        User currentUser = _context.users.SingleOrDefault(u => u.id == UserId);
 
-        //                 ActivityEvent newActivityEvent = new ActivityEvent();
-        //                 newActivityEvent.creator = currentUser;
-        //                 newActivityEvent.title = title;
-        //                 newActivityEvent.description = description;
-        //                 newActivityEvent.duration = duration;
-        //                 newActivityEvent.durationtime =  durationtime;
-        //                 newActivityEvent.date = date;
-        //                 _context.Add(newActivityEvent);
-        //                 _context.SaveChanges();
+                        Random random = new Random();
+                        int randomColor = random.Next(1, 4);
+                        int randomStr = random.Next(1,16);
+                        int randomInt = random.Next(1,16);
+                        int randomDex = random.Next(1,16);
 
-        //                 currentUser.activities.Add(newActivityEvent);
-        //                 _context.SaveChanges();
+                        Mimic newMimic = new Mimic();
+                        newMimic.owner = currentUser;
+                        newMimic.name = name;
+                        newMimic.species = species;
+                        newMimic.color = randomColor;
 
+                        newMimic.hp = 10;
+                        newMimic.hunger = 10;
+                        newMimic.str = randomStr;
+                        newMimic.inte = randomInt;
+                        newMimic.dex = randomDex;
 
-        //                 RSVP newRSVP = new RSVP();
+                        newMimic.created_at =  DateTime.Now;
+                        newMimic.updated_at =  DateTime.Now;
 
-        //                 newRSVP.user = currentUser;
-        //                 newRSVP.activity = newActivityEvent;
-        //                 _context.Add(newRSVP);
-        //                 _context.SaveChanges();
+                        _context.Add(newMimic);
+                        _context.SaveChanges();
 
-        //                 currentUser.rsvps.Add(newRSVP);
-        //                 newActivityEvent.rsvps.Add(newRSVP);
-        //                 _context.SaveChanges();
+                        currentUser.mimics.Add(newMimic);
+                        _context.SaveChanges();
 
-        //                 return RedirectToAction("activity", new { id = newActivityEvent.id });
-        //             }
+                        return RedirectToAction("mimic", new { id = newMimic.id });
+                    }
 
-        //             else{
-        //                  return RedirectToAction("createActivity");
-        //             }
-        //         }
+                    else{
+                         return RedirectToAction("adopt");
+                    }
+                }
 
-        //         else
-        //         {
-        //             return View("Index");
-        //         }
-        // }
+                else
+                {
+                    return View("Notlogged");
+                }
+        }
 
         // // Join Event
 
@@ -510,29 +512,24 @@ namespace DefaultProject.Controllers
         //         }
         // }
 
-        // // View Event
+        // View Mimic
 
-        // [HttpGet]
-        // [Route("Home/activity/{activityId}")]
-        // public IActionResult viewActivityEvent(int activityId)
-        // {
-        //     int? UserId = HttpContext.Session.GetInt32("UserId");
-        //     if (UserId != null)
-        //     {
-        //         User currentUser = _context.users.SingleOrDefault(u => u.id == UserId);
-        //         ActivityEvent currentActivityEvent = _context.activities.SingleOrDefault(w => w.id == activityId);
-        //         List<RSVP> rsvps = _context.rsvps.Where(r => r.activity.id == activityId).Include(r => r.user).ToList();
+        [HttpGet]
+        [Route("Home/mimic/{mimicId}")]
+        public IActionResult viewMimic(int mimicId)
+        {
+            int? UserId = HttpContext.Session.GetInt32("UserId");
 
-        //         ViewBag.currentActivityEvent = currentActivityEvent;
-        //         ViewBag.currentUser = currentUser;
-        //         ViewBag.rsvps = rsvps;
+                User currentUser = _context.users.SingleOrDefault(u => u.id == UserId);
+                Mimic currentMimic = _context.mimics.Include(m => m.owner).SingleOrDefault(m => m.id == mimicId);
 
-        //         return View("Activity");
-        //     }
-        //     else
-        //     {
-        //         return View("Index");
-        //     }
-        // }
+                Console.WriteLine("THIS IS WHAT YOU WANT::::::::::");
+                Console.WriteLine(DateTime.Now-currentMimic.created_at);
+
+                ViewBag.currentMimic = currentMimic;
+                ViewBag.currentUser = currentUser;
+
+                return View("Mimic");
+        }
     }
 }

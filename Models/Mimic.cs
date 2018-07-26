@@ -14,9 +14,7 @@ namespace DefaultProject.Models
 
         public string species {get;set;}
 
-        public string color {get;set;}
-
-        public string image {get;set;}
+        public int color {get;set;}
 
         public int hp {get;set;}
 
@@ -32,11 +30,10 @@ namespace DefaultProject.Models
         public Mimic(){
         }
 
-        public Mimic(User owner, string name, string species, string color, string image, int hp, int hunger, int str, int dex, int inte){
+        public Mimic(User owner, string name, string species, int color, int hp, int hunger, int str, int dex, int inte){
             this.owner = owner;
             this.species = species;
             this.color = color;
-            this.image = image;
             this.hp = hp;
             this.hunger = hunger;
             this.str = str;

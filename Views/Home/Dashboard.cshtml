@@ -1,51 +1,83 @@
 ﻿@using DefaultProject.Models
 
-
-<h3>Welcome, @ViewBag.currentUser.username!</h3>
-
-<hr>
-
-
-
 <h2>Your Mimics</h2>
 
-<div class="statbox">
-    <br>
-    <center><h4>Name</h4>
-    <p>Level: 1 | HP: 10/10 | Hunger: 8/10</p>
-    </center>
 
-<div class="mimic-containment">
-    <div class="mimic">
-        <img src="~/images/mimics/puppy/copper_adult.png">
-    </div>
-</div>
+@{
+    @foreach(var mimic in @ViewBag.usersMimics){
 
-</div>
 
-<div class="statbox">
-    <br>
-    <center><h4>Name</h4>
-    <p>Level: 1 | HP: 10/10 | Hunger: 8/10</p>
-    </center>
+        <!-- Determine Colors -->
 
-<div class="mimic-containment">
-    <div class="mimic">
-        <img src="~/images/mimics/cyclops/steel_youth.png">
-    </div>
-</div>
+    string color = "unknown";
+    @if(@mimic.color == 1){
+        if (@mimic.species == "cyclops"){
+            color = "steel";
+        }
+        else if (@mimic.species == "puppy"){
+            color = "copper";
+        }
+        else if (@mimic.species == "spike"){
+            color = "unknown";
+        }
+    }
+    else if(@mimic.color == 2){
+        if (@mimic.species == "cyclops"){
+            color = "bronze";
+        }
+        else if (@mimic.species == "puppy"){
+            color = "silver";
+        }
+        else if (@mimic.species == "spike"){
+            color = "unknown";
+        }
+    }
+    else if(@mimic.color == 3){
+        if (@mimic.species == "cyclops"){
+            color = "manganese";
+        }
+        else if (@mimic.species == "puppy"){
+            color = "gold";
+        }
+        else if (@mimic.species == "spike"){
+            color = "unknown";
+        }
+    }
 
-</div>
 
-<div class="statbox">
-    <br>
-    <center><h4>Name</h4>
-    <p>Level: 1 | HP: 10/10 | Hunger: 8/10</p>
-    </center>
+<!-- Determine Age -->
 
-<div class="mimic-containment">
-    <div class="mimic">
-        <img src="~/images/mimics/puppy/gold_egg.png">
-    </div>
-</div>
+    string age = "egg.png";
+    string ageText = "Egg";
+    TimeSpan youth = new TimeSpan(24, 00, 0);
+    TimeSpan adult = new TimeSpan(168, 00, 0);
+    @if (DateTime.Now - @mimic.created_at >= youth && DateTime.Now - @mimic.created_at < adult){
+            age = "youth.png";
+            ageText = "Youth";
+    }
+    else if (DateTime.Now - @mimic.created_at >= adult){
+            age = "adult.png";
+            ageText = "Adult";
+    }
 
+        <div class="statbox">
+            <br>
+            <center><h4><b><a href="/Home/mimic/@mimic.id">@mimic.name</a></b></h4>
+            <p><span style="text-transform:capitalize;">@color @mimic.species</span> Mimic</p>
+            <p> <i class="fas fa-heart"></i> @mimic.hp/10 &nbsp; &nbsp; &nbsp; &nbsp; <i class="fas fa-cookie-bite"></i> @mimic.hunger/10</p>
+            </center>
+
+            <a href="/Home/mimic/@mimic.id">
+
+            <div class="mimic-containment">
+                <div class="mimic">
+                    <img src="~/images/mimics/@mimic.species/@mimic.color/@age">
+                </div>
+        </div>
+
+        </a>
+
+        </div>
+
+    }
+}

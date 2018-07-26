@@ -8,6 +8,57 @@
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
+                <script
+  src="https://code.jquery.com/jquery-3.3.1.js"
+  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+  crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+
+    @{
+    DateTime now = DateTime.Now;
+    long currentHour = long.Parse(now.ToString("HH"));
+    string time = "day.png";
+
+ @if(currentHour <= 6 || currentHour >= 20){
+        time = "night.png";
+    }
+    else if(currentHour > 6 && currentHour <= 9){
+        time = "dawn.png";
+    }
+    else if (currentHour > 17 && currentHour <= 20){
+        time = "evening.png";
+    }
+    else{
+        time = "day.png";
+    }
+   
+}
+
+    <style>
+
+        .mimic-containment{
+            width: 250px;
+            height: 250px;
+            background-image: url('http://localhost:5000/images/layout/times/@time');
+            background-size: cover;
+            border-radius: 10px;
+        }
+
+        .mimic-containment-page{
+            width: 550px;
+            height: 550px;
+            background-image: url('http://localhost:5000/images/layout/times/@time');
+            background-size: cover;
+            border-radius: 10px;
+        }
+
+        body{
+            background-image: url('http://localhost:5000/images/layout/times/@time');
+        }
+    
+    </style>
+
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -23,20 +74,12 @@
 
         <div class="navbar">
             <a href="/dashboard">Home</a>
-            <a href="#news">News</a>
-            <a href="#news">Adopt</a>
-            <div class="dropdown">
-                <button class="dropbtn">My Farm
-                <i class="fa fa-caret-down"></i>
-                </button>
-                <div class="dropdown-content">
-                    <a href="#">Mimics</a>
-                    <a href="#">Inventory</a>
-                </div>
-            </div> 
+            <a href="/news">News</a>
+            <a href="/adopt">Adopt</a>
+            <a href="/adopt">Mimics</a>
+            <a href="/adopt">Inventory</a>
+            <a href="/adopt">Forage</a>
             <a href="#news">Profile</a>
-            <a href="#news">Friends</a>
-            <a href="#news">Chat</a>
             <a href="#news">Log Out</a>
         </div>
 
