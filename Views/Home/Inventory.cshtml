@@ -1,0 +1,29 @@
+﻿@using DefaultProject.Models
+
+<h2>Your Inventory</h2>
+
+<br>
+
+<table class="table">
+    <tr>
+        <td style="vertical-align: middle;">Gold</td>
+        <td style="vertical-align: middle;">@ViewBag.currentUser.gold</td>
+    </tr>
+
+    <tr>
+        <td style="vertical-align: middle;">Food</td>
+        <td style="vertical-align: middle;">@ViewBag.currentUser.food</td>
+    </tr>
+
+    <tr>
+        <td style="vertical-align: middle;">Health Potions</td>
+        <td style="vertical-align: middle;">@ViewBag.currentUser.potions</td>
+    </tr>
+
+    <tr>
+        <td style="vertical-align: middle;">Special Egg Tickets</td>
+        <td style="vertical-align: middle;">@ViewBag.currentUser.specialEgg</td>
+    </tr>
+
+
+</table>

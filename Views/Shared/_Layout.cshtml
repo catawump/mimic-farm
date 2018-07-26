@@ -6,7 +6,7 @@
     <title>Mimic Farm - A Virtual Pet Site</title>
 
     <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
         <link rel="stylesheet" href="~/css/site.css" />
                 <script
   src="https://code.jquery.com/jquery-3.3.1.js"
@@ -22,15 +22,50 @@
 
  @if(currentHour <= 6 || currentHour >= 20){
         time = "night.png";
+        <style>
+            .navbar a:hover, .dropdown:hover .dropbtn {
+                background-color: #3867e1;
+            }
+
+            a{
+                color: #3867e1;
+            }
+            a:hover{
+                color: #2749a2;
+            }
+        </style>
     }
     else if(currentHour > 6 && currentHour <= 9){
         time = "dawn.png";
+        <style>
+            .navbar a:hover, .dropdown:hover .dropbtn {
+                background-color: #bab3dc;
+            }
+            a{
+                color: #7063ae;
+            }
+            a:hover{
+                color: #bab3dc;
+            }
+        </style>
     }
-    else if (currentHour > 17 && currentHour <= 20){
-        time = "evening.png";
-    }
-    else{
+    else if(currentHour >= 9 && currentHour < 17){
         time = "day.png";
+    }
+    else if (currentHour >= 17 && currentHour <= 20){
+        time = "evening.png";
+        <style>
+            .navbar a:hover, .dropdown:hover .dropbtn {
+                background-color: #FBA44C;
+            }
+
+            a{
+                color: #EF7F39;
+            }
+            a:hover{
+                color: #FBA44C;
+            }
+        </style>
     }
    
 }
@@ -46,8 +81,16 @@
         }
 
         .mimic-containment-page{
-            width: 550px;
-            height: 550px;
+            width: 400px;
+            height: 400px;
+            background-image: url('http://localhost:5000/images/layout/times/@time');
+            background-size: cover;
+            border-radius: 10px;
+        }
+
+        .mimic-containment-profile{
+            width: 150px;
+            height: 150px;
             background-image: url('http://localhost:5000/images/layout/times/@time');
             background-size: cover;
             border-radius: 10px;
@@ -70,18 +113,20 @@
 <body>
 
     <div class="container">
-        <center><img src="~/images/layout/logo.png" width="500px"></center>
+        <center><img src="~/images/layout/logo.png" width="600px" style="margin-top: -25px;"></center>
 
         <div class="navbar">
             <a href="/dashboard">Home</a>
             <a href="/news">News</a>
             <a href="/adopt">Adopt</a>
-            <a href="/adopt">Mimics</a>
-            <a href="/adopt">Inventory</a>
-            <a href="/adopt">Forage</a>
-            <a href="#news">Profile</a>
-            <a href="#news">Log Out</a>
+            <a href="/dashboard">Mimics</a>
+            <a href="/inventory">Inventory</a>
+            <a href="/adventure">Adventure</a>
+            <a href="/profile">Profile</a>
+            <a href="/logout">Log Out</a>
         </div>
+
+        <br>
 
                 
         <div class="container body-content" style="width: 100%">

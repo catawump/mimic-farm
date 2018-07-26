@@ -22,7 +22,16 @@
 
         <input type="radio" name="species" id="spike" value="spike" />
         <label for="spike"><img src="~/images/mimics/adopt/spike_egg.png" width="150px"/></label>
-    </div>
+
+    @if(@ViewBag.currentUser.specialEgg >=1){
+
+        <h4>Special Egg Ticket Options</h4>
+        
+    <input type="radio" name="species" id="ghost" value="ghost" />
+        <label for="ghost"><img src="~/images/mimics/adopt/ghost_egg.png" width="150px"/></label>
+    }
+
+     </div>
 
     <script>
         $(document).ready(function(){

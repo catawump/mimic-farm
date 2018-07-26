@@ -69,9 +69,6 @@ namespace DefaultProject.Controllers
         [Route("login")]
         public IActionResult Login(string CheckEmail, string CheckPassword)
         {
-            // Console.WriteLine("Email is: " + CheckEmail);
-            // Console.WriteLine("Password is: " + CheckPassword);
-
             User checkUser = _context.users.SingleOrDefault(user => user.email == CheckEmail);
             if (checkUser != null && CheckPassword != null){
                 var Hasher = new PasswordHasher<User>();
@@ -121,15 +118,11 @@ namespace DefaultProject.Controllers
                 ViewBag.today = todayFormat;
                 ViewBag.time = timeFormat;
 
-                // List<ActivityEvent> rsvps = _context.activities.Include(u => u.rsvps).ToList();
-                // List<ActivityEvent> allActivityEvents = _context.activities.Include(a => a.creator).OrderBy(a => a.date).Where(a => a.date > today).ToList(); 
                 User currentUser = _context.users.SingleOrDefault(u => u.id == UserId);
                 List<Mimic> usersMimics = _context.mimics.Include(m => m.owner).Where(m => m.owner.id == UserId).ToList();
 
-                // ViewBag.allActivityEvents = allActivityEvents;
                 ViewBag.currentUser = currentUser;
                 ViewBag.usersMimics = usersMimics;
-                // ViewBag.rsvps_cool = rsvps_cool;
 
                 return View("Dashboard");
             }
@@ -138,6 +131,240 @@ namespace DefaultProject.Controllers
                 return View("Index");
             }
         }
+
+        // Profile
+
+        [HttpGet]
+        [Route("profile")]
+        public IActionResult ProfileRe(int userId)
+        {
+
+                int? UserId = HttpContext.Session.GetInt32("UserId");
+                if (UserId != null)
+                {
+
+                User currentUser = _context.users.SingleOrDefault(u => u.id == UserId);
+
+                return RedirectToAction("profile", new { currentUser.id });
+
+                }
+
+            else
+            {
+                return View("Notlogged");
+            }
+        }
+
+
+        [HttpGet]
+        [Route("Home/profile/{userId}")]
+        public IActionResult ProfileView(int userId)
+        {
+
+                //int? UserId = HttpContext.Session.GetInt32("sUserId");
+
+                User profileUser = _context.users.SingleOrDefault(u => u.id == userId);
+                List<Mimic> usersMimics = _context.mimics.Include(m => m.owner).Where(m => m.owner.id == profileUser.id).ToList();
+
+                ViewBag.profileUser = profileUser;
+                ViewBag.usersMimics = usersMimics;
+
+                return View("Profile");
+
+
+        }
+
+
+
+        // Adventures!
+
+        [HttpGet]
+        [Route("adventure")]
+        public IActionResult Adventure()
+        {
+            int? UserId = HttpContext.Session.GetInt32("UserId");
+            if (UserId != null)
+            {
+
+                User currentUser = _context.users.SingleOrDefault(u => u.id == UserId);
+                List<Mimic> usersMimics = _context.mimics.Include(m => m.owner).Where(m => m.owner.id == UserId && m.hp > 0 && m.hunger > 0).ToList();
+
+                ViewBag.currentUser = currentUser;
+                ViewBag.usersMimics = usersMimics;
+
+                return View("Adventure");
+            }
+            else
+            {
+                return View("Notlogged");
+            }
+        }
+
+        [HttpGet]
+        [Route("adventure/go/{mimicId}")]
+        public IActionResult Adventure(int mimicId)
+        {
+            int? UserId = HttpContext.Session.GetInt32("UserId");
+            if (UserId != null)
+            {
+
+                User currentUser = _context.users.SingleOrDefault(u => u.id == UserId);
+                Mimic currentMimic = _context.mimics.SingleOrDefault(m => m.id == mimicId);
+
+                if (currentMimic.hp <= 0 || currentMimic.hunger <= 0){
+                    return View("Error");
+                }
+
+                else{
+
+                        Random random = new Random();
+                        int randomGold = random.Next(0, (currentMimic.str+currentMimic.dex+currentMimic.inte));
+                        int randomFood = random.Next(0, (currentMimic.str+currentMimic.dex+currentMimic.inte)/5);
+                        int randomPotion = random.Next(0, (currentMimic.str+currentMimic.dex+currentMimic.inte)/5);
+                        int randomSpecial = random.Next(1,100);
+
+                        int randomHP = random.Next(0,4);
+                        int randomHunger = random.Next(0,4);
+
+                        currentUser.gold += randomGold;
+                        currentUser.food += randomFood;
+                        currentUser.potions += randomPotion;
+
+                        if(randomSpecial == 33){
+                            currentUser.specialEgg += 1;
+                            ViewBag.special = "Wow! You collected a special egg ticket! Click adopt to see the rare species options!";
+                        }
+
+                        else{
+                            ViewBag.special = "";
+                        }
+
+                        currentMimic.hp -= randomHP;
+                        currentMimic.hunger -= randomHunger;
+
+                        _context.SaveChanges();
+
+                        ViewBag.currentUser = currentUser;
+                        ViewBag.currentMimic = currentMimic;
+
+                        ViewBag.gainedGold = randomGold;
+                        ViewBag.gainedFood = randomFood;
+                        ViewBag.gainedPotions = randomPotion;
+
+                        ViewBag.lostHP = randomHP;
+                        ViewBag.lostHunger = randomHunger;
+
+                return View("Adventureresults");
+                }
+            }
+            else
+            {
+                return View("Notlogged");
+            }
+        }
+
+        // Inventory
+
+        [HttpGet]
+        [Route("inventory")]
+        public IActionResult Inventory()
+        {
+            int? UserId = HttpContext.Session.GetInt32("UserId");
+            if (UserId != null)
+            {
+                User currentUser = _context.users.SingleOrDefault(u => u.id == UserId);
+                
+                ViewBag.currentUser = currentUser;
+
+                return View("Inventory");
+            }
+            else
+            {
+                return View("Notlogged");
+            }
+        }
+
+        // News
+
+        [HttpGet]
+        [Route("news")]
+        public IActionResult News()
+        {
+
+            int? UserId = HttpContext.Session.GetInt32("UserId");
+
+            User currentUser = _context.users.SingleOrDefault(u => u.id == UserId);
+                
+            ViewBag.currentUser = currentUser;
+
+            return View("News");
+
+        }
+
+        // Healing and Feeding
+
+        [HttpGet]
+        [Route("heal/{mimicId}")]
+        public IActionResult Heal(int mimicId)
+        {
+            int? UserId = HttpContext.Session.GetInt32("UserId");
+            if (UserId != null)
+            {
+
+                User currentUser = _context.users.SingleOrDefault(u => u.id == UserId);
+                Mimic currentMimic = _context.mimics.Include(m => m.owner).SingleOrDefault(m => m.id == mimicId);
+
+                if (currentMimic.owner.potions <= 0){
+                    return View("Error");
+                }
+
+                else{
+                        currentMimic.hp += 1;
+                        currentUser.potions -=1;
+
+                        _context.SaveChanges();
+
+                return RedirectToAction("mimic", new { currentMimic.id });
+                }
+            }
+            else
+            {
+                return View("Notlogged");
+            }
+        }
+
+        [HttpGet]
+        [Route("feed/{mimicId}")]
+        public IActionResult Feed(int mimicId)
+        {
+            int? UserId = HttpContext.Session.GetInt32("UserId");
+            if (UserId != null)
+            {
+
+                User currentUser = _context.users.SingleOrDefault(u => u.id == UserId);
+                Mimic currentMimic = _context.mimics.Include(m => m.owner).SingleOrDefault(m => m.id == mimicId);
+
+                if (currentMimic.owner.food <= 0){
+                    return View("Error");
+                }
+
+                else{
+                        currentMimic.hunger += 1;
+                        currentUser.food -=1;
+
+                        _context.SaveChanges();
+
+                return RedirectToAction("mimic", new { currentMimic.id });
+
+                }
+            }
+            else
+            {
+                return View("Notlogged");
+            }
+        }
+
+        // Not Logged In
 
         [HttpGet]
         [Route("not-logged")]
@@ -163,6 +390,8 @@ namespace DefaultProject.Controllers
             int? UserId = HttpContext.Session.GetInt32("UserId");
             if (UserId != null)
             {
+                User currentUser = _context.users.SingleOrDefault(u => u.id == UserId);
+                ViewBag.currentUser = currentUser;
                 return View("Adopt");
             }
             else
@@ -222,296 +451,6 @@ namespace DefaultProject.Controllers
                 }
         }
 
-        // // Join Event
-
-        // [HttpPost]
-        // [Route("rsvp/{activityId}")]
-        // public IActionResult rsvpActivityEvent(int activityId)
-        // {
-        //     int? UserId = HttpContext.Session.GetInt32("UserId");
-        //         if (UserId != null)
-        //         {
-
-        //             User currentUser = _context.users.SingleOrDefault(u => u.id == UserId);
-
-        //             ActivityEvent currentActivityEvent = _context.activities.SingleOrDefault(w => w.id == activityId);
-
-        //             List<RSVP> thisUsersEvents = _context.rsvps.Where(r => r.user.id == currentUser.id).Include(r => r.activity).ToList();
-
-        //             RSVP checkDuplicate = _context.rsvps.SingleOrDefault(r => r.user.id == currentUser.id && r.activity.id == currentActivityEvent.id);
-
-        //             RSVP checkConflict = _context.rsvps.SingleOrDefault(r => r.user.id == currentUser.id && r.activity.date == currentActivityEvent.date && r.activity.id != currentActivityEvent.id);
-
-        //             string checkConflict2 = null;
-
-        //             int thiseventfulldurationmin = 0;
-                    
-        //             if (currentActivityEvent.durationtime == "Minutes"){
-        //                 thiseventfulldurationmin = currentActivityEvent.duration;
-        //                 }
-        //             else if (currentActivityEvent.durationtime == "Hours"){
-        //                 thiseventfulldurationmin = currentActivityEvent.duration * 60;
-        //                 }
-        //             else {
-        //                 thiseventfulldurationmin = currentActivityEvent.duration * 1440;
-        //                 }
-
-        //             foreach (var e in thisUsersEvents){
-        //                 if (e.activity.durationtime == "Minutes"){
-        //                     int fulldurationminutes = e.activity.duration;
-        //                     DateTime starttime = e.activity.date;
-        //                     DateTime endtime = starttime.AddMinutes(fulldurationminutes);
-
-        //                     DateTime thisStarttime = currentActivityEvent.date;
-        //                     DateTime thisEndtime = thisStarttime.AddMinutes(thiseventfulldurationmin);
-
-        //                     if(currentActivityEvent.date >= starttime && currentActivityEvent.date <= endtime && currentActivityEvent.id != e.activity.id){
-        //                         checkConflict2 = "YUP!";
-        //                     }
-
-        //                     else if(e.activity.date >= thisStarttime && e.activity.date <= thisEndtime && currentActivityEvent.id != e.activity.id){
-        //                         checkConflict2 = "YUP!";
-        //                     }
-                        
-        //                 }
-        //                 else if (e.activity.durationtime == "Hours"){
-        //                     int fulldurationminutes = e.activity.duration * 60;
-        //                     DateTime starttime = e.activity.date;
-        //                 DateTime endtime = starttime.AddMinutes(fulldurationminutes);
-                        
-        //                 DateTime thisStarttime = currentActivityEvent.date;
-        //                     DateTime thisEndtime = thisStarttime.AddMinutes(thiseventfulldurationmin);
-
-        //                     if(currentActivityEvent.date >= starttime && currentActivityEvent.date <= endtime && currentActivityEvent.id != e.activity.id){
-        //                         checkConflict2 = "YUP!";
-        //                     }
-
-        //                     else if(e.activity.date >= thisStarttime && e.activity.date <= thisEndtime && currentActivityEvent.id != e.activity.id){
-        //                         checkConflict2 = "YUP!";
-        //                     }
-        //                 }
-        //                 else {
-        //                     int fulldurationminutes = e.activity.duration * 1440;
-        //                     DateTime starttime = e.activity.date;
-        //                 DateTime endtime = starttime.AddMinutes(fulldurationminutes);
-
-        //                 DateTime thisStarttime = currentActivityEvent.date;
-        //                     DateTime thisEndtime = thisStarttime.AddMinutes(thiseventfulldurationmin);
-
-        //                     if(currentActivityEvent.date >= starttime && currentActivityEvent.date <= endtime && currentActivityEvent.id != e.activity.id){
-        //                         checkConflict2 = "YUP!";
-        //                     }
-
-        //                     else if(e.activity.date >= thisStarttime && e.activity.date <= thisEndtime && currentActivityEvent.id != e.activity.id){
-        //                         checkConflict2 = "YUP!";
-        //                     }
-        //                 }
-        //             }
-                    
-
-        //             if (checkConflict != null || checkConflict2 != null){
-
-        //                 TempData["message"] = "Schedule conflict! You are already attending an event at this time!";
-
-        //                 return RedirectToAction("Dashboard");
-
-        //             }
-
-        //             else if (checkDuplicate != null){
-        //                 _context.rsvps.Remove(checkDuplicate);
-        //                 _context.SaveChanges();
-
-        //                 TempData["message"] = "You have left the event!";
-
-        //                 return RedirectToAction("Dashboard");
-        //             }
-
-        //             else{
-
-        //                 RSVP newRSVP = new RSVP();
-
-        //                 newRSVP.user = currentUser;
-        //                 newRSVP.activity = currentActivityEvent;
-        //                 _context.Add(newRSVP);
-        //                 _context.SaveChanges();
-
-        //                 currentUser.rsvps.Add(newRSVP);
-        //                 currentActivityEvent.rsvps.Add(newRSVP);
-        //                 _context.SaveChanges();
-
-        //                 TempData["message"] = "You have joined the event!";
-
-        //                 return RedirectToAction("Dashboard");
-        //             }
-        //         }
-
-        //         else
-        //         {
-        //             return View("Index");
-        //         }
-        // }
-
-        // [HttpPost]
-        // [Route("rsvpactivity/{activityId}")]
-        // public IActionResult rsvpActivityEventPage(int activityId)
-        // {
-        //     int? UserId = HttpContext.Session.GetInt32("UserId");
-        //         if (UserId != null)
-        //         {
-
-        //                                User currentUser = _context.users.SingleOrDefault(u => u.id == UserId);
-
-        //             ActivityEvent currentActivityEvent = _context.activities.SingleOrDefault(w => w.id == activityId);
-
-        //             List<RSVP> thisUsersEvents = _context.rsvps.Where(r => r.user.id == currentUser.id).Include(r => r.activity).ToList();
-
-        //             RSVP checkDuplicate = _context.rsvps.SingleOrDefault(r => r.user.id == currentUser.id && r.activity.id == currentActivityEvent.id);
-
-        //             RSVP checkConflict = _context.rsvps.SingleOrDefault(r => r.user.id == currentUser.id && r.activity.date == currentActivityEvent.date && r.activity.id != currentActivityEvent.id);
-
-        //             string checkConflict2 = null;
-
-        //             int thiseventfulldurationmin = 0;
-                    
-        //             if (currentActivityEvent.durationtime == "Minutes"){
-        //                 thiseventfulldurationmin = currentActivityEvent.duration;
-        //                 }
-        //             else if (currentActivityEvent.durationtime == "Hours"){
-        //                 thiseventfulldurationmin = currentActivityEvent.duration * 60;
-        //                 }
-        //             else {
-        //                 thiseventfulldurationmin = currentActivityEvent.duration * 1440;
-        //                 }
-
-        //             foreach (var e in thisUsersEvents){
-        //                 if (e.activity.durationtime == "Minutes"){
-        //                     int fulldurationminutes = e.activity.duration;
-        //                     DateTime starttime = e.activity.date;
-        //                     DateTime endtime = starttime.AddMinutes(fulldurationminutes);
-
-        //                     DateTime thisStarttime = currentActivityEvent.date;
-        //                     DateTime thisEndtime = thisStarttime.AddMinutes(thiseventfulldurationmin);
-
-        //                     if(currentActivityEvent.date >= starttime && currentActivityEvent.date <= endtime && currentActivityEvent.id != e.activity.id){
-        //                         checkConflict2 = "YUP!";
-        //                     }
-
-        //                     else if(e.activity.date >= thisStarttime && e.activity.date <= thisEndtime && currentActivityEvent.id != e.activity.id){
-        //                         checkConflict2 = "YUP!";
-        //                     }
-                        
-        //                 }
-        //                 else if (e.activity.durationtime == "Hours"){
-        //                     int fulldurationminutes = e.activity.duration * 60;
-        //                     DateTime starttime = e.activity.date;
-        //                 DateTime endtime = starttime.AddMinutes(fulldurationminutes);
-                        
-        //                 DateTime thisStarttime = currentActivityEvent.date;
-        //                     DateTime thisEndtime = thisStarttime.AddMinutes(thiseventfulldurationmin);
-
-        //                     if(currentActivityEvent.date >= starttime && currentActivityEvent.date <= endtime && currentActivityEvent.id != e.activity.id){
-        //                         checkConflict2 = "YUP!";
-        //                     }
-
-        //                     else if(e.activity.date >= thisStarttime && e.activity.date <= thisEndtime && currentActivityEvent.id != e.activity.id){
-        //                         checkConflict2 = "YUP!";
-        //                     }
-        //                 }
-        //                 else {
-        //                     int fulldurationminutes = e.activity.duration * 1440;
-        //                     DateTime starttime = e.activity.date;
-        //                 DateTime endtime = starttime.AddMinutes(fulldurationminutes);
-
-        //                 DateTime thisStarttime = currentActivityEvent.date;
-        //                     DateTime thisEndtime = thisStarttime.AddMinutes(thiseventfulldurationmin);
-
-        //                     if(currentActivityEvent.date >= starttime && currentActivityEvent.date <= endtime && currentActivityEvent.id != e.activity.id){
-        //                         checkConflict2 = "YUP!";
-        //                     }
-
-        //                     else if(e.activity.date >= thisStarttime && e.activity.date <= thisEndtime && currentActivityEvent.id != e.activity.id){
-        //                         checkConflict2 = "YUP!";
-        //                     }
-        //                 }
-        //             }
-                    
-
-        //             if (checkConflict != null || checkConflict2 != null){
-
-        //                 TempData["message"] = "Schedule conflict! You are already attending an event at this time!";
-
-        //                 return RedirectToAction("activity", new { id = currentActivityEvent.id });
-
-        //             }
-
-        //             else if (checkDuplicate != null){
-        //                 _context.rsvps.Remove(checkDuplicate);
-        //                 _context.SaveChanges();
-
-        //                 TempData["message"] = "You have left the event!";
-
-        //                 return RedirectToAction("activity", new { id = currentActivityEvent.id });
-        //             }
-
-        //             else{
-
-        //                 RSVP newRSVP = new RSVP();
-
-        //                 newRSVP.user = currentUser;
-        //                 newRSVP.activity = currentActivityEvent;
-        //                 _context.Add(newRSVP);
-        //                 _context.SaveChanges();
-
-        //                 currentUser.rsvps.Add(newRSVP);
-        //                 currentActivityEvent.rsvps.Add(newRSVP);
-        //                 _context.SaveChanges();
-
-        //                 TempData["message"] = "You have joined the event!";
-
-        //                 return RedirectToAction("activity", new { id = currentActivityEvent.id });
-        //             }
-        //         }
-
-        //         else
-        //         {
-        //             return View("Index");
-        //         }
-        // }
-
-        // // Delete Event
-
-        // [HttpPost]
-        // [Route("delete/{activityId}")]
-        // public IActionResult deleteActivityEvent(int activityId)
-        // {
-        //     int? UserId = HttpContext.Session.GetInt32("UserId");
-        //         if (UserId != null)
-        //         {
-
-        //             List<RSVP> removePeople = _context.rsvps.Where(r => r.activity.id == activityId).ToList();
-        //                 foreach( var participant in removePeople)
-        //                 {
-        //                     _context.Remove(participant);
-        //                 }
-        //             _context.SaveChanges();
-
-        //             ActivityEvent activity = _context.activities.Where(w => w.id == activityId).SingleOrDefault();
-
-        //             _context.activities.Remove(activity);
-        //             _context.SaveChanges();
-
-        //             TempData["message"] = "You have deleted the event!";
-
-        //             return RedirectToAction("Dashboard");
-
-        //         }
-
-        //         else
-        //         {
-        //             return View("Index");
-        //         }
-        // }
-
         // View Mimic
 
         [HttpGet]
@@ -522,9 +461,6 @@ namespace DefaultProject.Controllers
 
                 User currentUser = _context.users.SingleOrDefault(u => u.id == UserId);
                 Mimic currentMimic = _context.mimics.Include(m => m.owner).SingleOrDefault(m => m.id == mimicId);
-
-                Console.WriteLine("THIS IS WHAT YOU WANT::::::::::");
-                Console.WriteLine(DateTime.Now-currentMimic.created_at);
 
                 ViewBag.currentMimic = currentMimic;
                 ViewBag.currentUser = currentUser;

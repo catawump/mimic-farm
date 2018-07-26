@@ -1,11 +1,18 @@
 ﻿@using DefaultProject.Models
 
-<h2>Your Mimics</h2>
+<h2>Send a Mimic on an Adventure!</h2>
 
+<p>You can send any of your healthy mimics on an adventure to collect items and gold.<br>Be warned: your mimics can lose health and energy while on their journey!</p>
+
+<br>
+
+<h3>Pick Adventurer</h3>
+
+<table class="table">
+        
 
 @{
     @foreach(var mimic in @ViewBag.usersMimics){
-
 
         <!-- Determine Colors -->
 
@@ -59,25 +66,17 @@
             age = "adult.png";
             ageText = "Adult";
     }
+    <tr>
 
-        <div class="statbox">
-            <br>
-            <center><h4><b><a href="/Home/mimic/@mimic.id">@mimic.name</a></b></h4>
-            <p><span style="text-transform:capitalize;">@color @mimic.species</span> Mimic</p>
-            <p><i class="fas fa-heart"></i> @mimic.hp/10 &nbsp; &nbsp; &nbsp; &nbsp; <i class="fas fa-cookie-bite"></i> @mimic.hunger/10</p>
-            </center>
+        <td style="vertical-align: middle;"><img src="~/images/mimics/@mimic.species/@mimic.color/@age" width="100px"></td>
+        <td style="vertical-align: middle;"><a href="/Home/mimic/@mimic.id">@mimic.name</a></td>
+        <td style="vertical-align: middle;"><span style="text-transform:capitalize;">@color @mimic.species</span> Mimic @ageText</td>
+        <td style="vertical-align: middle;"><i class="fas fa-heart"></i> @mimic.hp/10</td>
+        <td style="vertical-align: middle;"><i class="fas fa-cookie-bite"></i> @mimic.hunger/10</td>
+        <td style="vertical-align: middle;"><a href="/adventure/go/@mimic.id" class="btn btn-success">Send</a></td>
 
-            <a href="/Home/mimic/@mimic.id">
-
-            <div class="mimic-containment">
-                <div class="mimic">
-                    <img src="~/images/mimics/@mimic.species/@mimic.color/@age">
-                </div>
-        </div>
-
-        </a>
-
-        </div>
+    </tr>
 
     }
 }
+</table>

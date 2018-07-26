@@ -35,6 +35,14 @@ namespace DefaultProject.Models
 
         public int level {get;set;}
 
+        public int food {get;set;}
+
+        public int potions {get;set;}
+
+        public int specialEgg {get;set;}
+
+        public int gold {get;set;}
+
         public List<Mimic> mimics {get;set;}
         public List<Item> items {get;set;}
 
@@ -42,6 +50,10 @@ namespace DefaultProject.Models
             mimics = new List<Mimic>();
             items = new List<Item>();
             level = 1;
+            food = 10;
+            potions = 10;
+            specialEgg = 0;
+            gold = 100;
         }
     }
 }

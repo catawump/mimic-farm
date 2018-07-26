@@ -1,6 +1,10 @@
 ﻿@using DefaultProject.Models
 
-<h2>Your Mimics</h2>
+<h2><a><span style="text-transform:capitalize;">@ViewBag.profileUser.username</span></a></h2>
+<p>User level: @ViewBag.profileUser.level</p>
+<p>Gold: @ViewBag.profileUser.gold</p>
+
+<h3><span style="text-transform:capitalize;">@ViewBag.profileUser.username's Mimics</span></h3>
 
 
 @{
@@ -60,17 +64,17 @@
             ageText = "Adult";
     }
 
-        <div class="statbox">
+        <div class="statbox-profile">
             <br>
             <center><h4><b><a href="/Home/mimic/@mimic.id">@mimic.name</a></b></h4>
-            <p><span style="text-transform:capitalize;">@color @mimic.species</span> Mimic</p>
-            <p><i class="fas fa-heart"></i> @mimic.hp/10 &nbsp; &nbsp; &nbsp; &nbsp; <i class="fas fa-cookie-bite"></i> @mimic.hunger/10</p>
+            <p><span style="text-transform:capitalize;">@color @mimic.species</span></p>
+            <p><i class="fas fa-heart"></i> @mimic.hp/10 &nbsp; &nbsp; <i class="fas fa-cookie-bite"></i> @mimic.hunger/10</p>
             </center>
 
             <a href="/Home/mimic/@mimic.id">
 
-            <div class="mimic-containment">
-                <div class="mimic">
+            <div class="mimic-containment-profile">
+                <div class="mimic-profile">
                     <img src="~/images/mimics/@mimic.species/@mimic.color/@age">
                 </div>
         </div>

@@ -47,8 +47,10 @@
 
 .navbar {
     overflow: hidden;
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.548);
     font-family: Arial, Helvetica, sans-serif;
+    border-radius: 10px;
+    color: #000 !important;
 }
 
 .navbar a {
@@ -78,6 +80,7 @@
 
 .navbar a:hover, .dropdown:hover .dropbtn {
     background-color: #B6D680;
+    color: #000 !important;
 }
 
 .dropdown-content {
@@ -112,19 +115,35 @@
     margin: 0px 12px;
 }
 
+.statbox-profile{
+    width: 150px;
+    display: inline-block;
+    margin: 0px 12px;
+}
+
 .mimic{
     width: 250px;
     height: 250px;
 }
 
 .mimic-page{
-    width: 550px;
-    height: 550px;
+    width: 400px;
+    height: 400px;
 }
 
 .mimic-page img{
-    width: 550px;
-    height: 550px;
+    width: 400px;
+    height: 400px;
+}
+
+.mimic-profile{
+    width: 150px;
+    height: 150px;
+}
+
+.mimic-profile img{
+    width: 150px;
+    height: 150px;
 }
 
 .mimic img{
@@ -148,4 +167,8 @@
 
 #species label img {
     padding: 3px;
+}
+
+td{
+    vertical-align: middle;
 }
