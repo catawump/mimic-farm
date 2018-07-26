@@ -1,2 +1,2 @@
-# mimic-farm
+# Mimic Farm
 A virtual pet website!
