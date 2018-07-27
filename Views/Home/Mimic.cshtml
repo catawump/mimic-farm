@@ -11,7 +11,7 @@
             color = "copper";
         }
         else if (@ViewBag.currentMimic.species == "spike"){
-            color = "unknown";
+            color = "lava rock";
         }
     }
     else if(@ViewBag.currentMimic.color == 2){
@@ -22,7 +22,7 @@
             color = "silver";
         }
         else if (@ViewBag.currentMimic.species == "spike"){
-            color = "unknown";
+            color = "patina";
         }
     }
     else if(@ViewBag.currentMimic.color == 3){
@@ -33,7 +33,7 @@
             color = "gold";
         }
         else if (@ViewBag.currentMimic.species == "spike"){
-            color = "unknown";
+            color = "iron";
         }
     }
 }
@@ -59,7 +59,9 @@
 <center><h2>@ViewBag.currentMimic.name the <span style="text-transform:capitalize;">@color @ViewBag.currentMimic.species</span> Mimic</h2>
 <p>@ViewBag.currentMimic.str strength | @ViewBag.currentMimic.dex dexterity | @ViewBag.currentMimic.inte intelligence | @ageText</p>
 <p>Owner: <a href="/profile/@ViewBag.currentMimic.owner.id">@ViewBag.currentMimic.owner.username</a></p>
+</center>
 
+<div class="left" style="width: 50%; display: inline-block; vertical-align: top; margin-right: 20px;">
 
 
 
@@ -69,10 +71,43 @@
     </div>
 </div>
 
-<p>
+<center><h4>Level: @ViewBag.currentMimic.lvl</h4></center>
+
+</div>
+
+<div class="right" style="width: 45%; display: inline-block; vertical-align: top;">
+
+<center>
+    
+    <h4>Status</h4><br>
+
+</center>
+<div style="margin: 0px auto; width: 250px;">
+    <center><p>XP: @ViewBag.percentXP%</p></center>
+<div class="w3-light-grey" style="margin-top: -39px;">
+  <div class="w3-container w3-green w3-center" style="height:24px;width: @ViewBag.percentXP%;overflow: visible;"></div>
+</div>
+<br>
+<center><p><i class="fas fa-heart"></i> @ViewBag.currentMimic.hp / 10</p></center>
+<div class="w3-light-grey" style="margin-top: -39px;">
+  <div class="w3-container w3-red w3-center" style="height:24px;width: @ViewBag.percentHP%;overflow: visible;"></div>
+</div>
+<br>
+<center><p><i class="fas fa-cookie-bite"></i> @ViewBag.currentMimic.hunger / 10</p></center>
+<div class="w3-light-grey" style="margin-top: -39px;">
+  <div class="w3-container w3-blue w3-center" style="height:24px;width: @ViewBag.percentHunger%;overflow: visible;"></div>
+</div>
+</div>
+<br>
+
+<center>
+<!-- <p>
     <br>
 <i class="fas fa-heart"></i> @ViewBag.currentMimic.hp / 10 &nbsp; &nbsp; &nbsp; &nbsp; <i class="fas fa-cookie-bite"></i> @ViewBag.currentMimic.hunger / 10
-</p>
+</p> -->
+    
+    <h4>Actions</h4><br>
+
 
 
 @{
@@ -93,10 +128,12 @@
         <button class="btn btn-secondary" style="background-color: #DDD; color: #AAA;">Feed</button>
     }
     else if (@ViewBag.currentMimic.hunger >= 10){
-        <button class="btn btn-secondary" style="background-color: #DDD; color: #AAA;">Heal</button>
+        <button class="btn btn-secondary" style="background-color: #DDD; color: #AAA;">Feed</button>
     }
 
 
 }
 
 </center>
+
+</div>

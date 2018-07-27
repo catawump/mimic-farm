@@ -219,12 +219,16 @@ namespace DefaultProject.Controllers
 
                         Random random = new Random();
                         int randomGold = random.Next(0, (currentMimic.str+currentMimic.dex+currentMimic.inte));
-                        int randomFood = random.Next(0, (currentMimic.str+currentMimic.dex+currentMimic.inte)/5);
-                        int randomPotion = random.Next(0, (currentMimic.str+currentMimic.dex+currentMimic.inte)/5);
+                        int randomFood = random.Next(0, (currentMimic.str+currentMimic.dex+currentMimic.inte)/8);
+                        int randomPotion = random.Next(0, (currentMimic.str+currentMimic.dex+currentMimic.inte)/8);
                         int randomSpecial = random.Next(1,100);
 
                         int randomHP = random.Next(0,4);
                         int randomHunger = random.Next(0,4);
+
+                        int randomInte = random.Next(0,4);
+                        int randomDex = random.Next(1,4);
+                        int randomStr = random.Next(1,4);
 
                         currentUser.gold += randomGold;
                         currentUser.food += randomFood;
@@ -241,6 +245,29 @@ namespace DefaultProject.Controllers
 
                         currentMimic.hp -= randomHP;
                         currentMimic.hunger -= randomHunger;
+                        currentMimic.xp += 1;
+
+                        _context.SaveChanges();
+
+                        if (currentMimic.hp < 0){
+                            currentMimic.hp = 0;
+                        }
+
+                        if (currentMimic.hunger < 0){
+                            currentMimic.hunger = 0;
+                        }
+
+                        if (currentMimic.xp >= (currentMimic.lvl * 5)){
+                            currentMimic.xp = 0;
+                            currentMimic.lvl += 1;
+                            currentMimic.str += randomStr;
+                            currentMimic.inte += randomInte;
+                            currentMimic.dex += randomDex;
+                            ViewBag.leveledUp = "Your mimic gained a level! Stats increased.";
+                        }
+                        else{
+                            ViewBag.leveledUp = "";
+                        }
 
                         _context.SaveChanges();
 
@@ -407,8 +434,17 @@ namespace DefaultProject.Controllers
             int? UserId = HttpContext.Session.GetInt32("UserId");
                 if (UserId != null)
                 {
+    
                     if(ModelState.IsValid){
                         User currentUser = _context.users.SingleOrDefault(u => u.id == UserId);
+
+                        if(species == "spike" && currentUser.specialEgg < 1){
+                            return View("Error");
+                        }
+
+                        else if(species == "spike" && currentUser.specialEgg >= 1){
+                            currentUser.specialEgg -= 1;
+                        }
 
                         Random random = new Random();
                         int randomColor = random.Next(1, 4);
@@ -421,6 +457,9 @@ namespace DefaultProject.Controllers
                         newMimic.name = name;
                         newMimic.species = species;
                         newMimic.color = randomColor;
+
+                        newMimic.xp = 0;
+                        newMimic.lvl = 1;
 
                         newMimic.hp = 10;
                         newMimic.hunger = 10;
@@ -462,8 +501,17 @@ namespace DefaultProject.Controllers
                 User currentUser = _context.users.SingleOrDefault(u => u.id == UserId);
                 Mimic currentMimic = _context.mimics.Include(m => m.owner).SingleOrDefault(m => m.id == mimicId);
 
+                double xppercent = ((double)currentMimic.xp/((double)currentMimic.lvl*5.00))*100.00;
+
+                int hppercent = currentMimic.hp * 10;
+
+                int hungerpercent = currentMimic.hunger * 10;
+
                 ViewBag.currentMimic = currentMimic;
                 ViewBag.currentUser = currentUser;
+                ViewBag.percentXP = Math.Round(xppercent, 2);
+                ViewBag.percentHP = hppercent;
+                ViewBag.percentHunger = hungerpercent;
 
                 return View("Mimic");
         }

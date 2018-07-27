@@ -112,13 +112,13 @@
 .statbox{
     width: 250px;
     display: inline-block;
-    margin: 0px 12px;
+    margin: 0px 11px;
 }
 
 .statbox-profile{
-    width: 150px;
+    width: 175px;
     display: inline-block;
-    margin: 0px 12px;
+    margin: 0px 2px;
 }
 
 .mimic{
@@ -137,13 +137,13 @@
 }
 
 .mimic-profile{
-    width: 150px;
-    height: 150px;
+    width: 175px;
+    height: 175px;
 }
 
 .mimic-profile img{
-    width: 150px;
-    height: 150px;
+    width: 175px;
+    height: 175px;
 }
 
 .mimic img{
