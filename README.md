@@ -1,5 +1,11 @@
 <h2>Mimic Farm</h2>
 
+<img src="http://milkgoblin.com/wp-content/uploads/2018/07/1.png">
+<img src="http://milkgoblin.com/wp-content/uploads/2018/07/7.png">
+<img src="http://milkgoblin.com/wp-content/uploads/2018/07/4.png">
+<img src="http://milkgoblin.com/wp-content/uploads/2018/07/3.png">
+<img src="http://milkgoblin.com/wp-content/uploads/2018/07/2.png">
+
 <h3>About This Project</h3>
 Mimic Farm is an online virtual pet game where players raise mimics and send them on adventures! This project was a solo project created during my time at coding bootcamp, so I was personally responsible for all design, art, and functionality of the app.
 
